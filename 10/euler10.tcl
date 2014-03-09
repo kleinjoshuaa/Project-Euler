@@ -1,0 +1,59 @@
+# Advanced Prime Iterator
+# My own Prime Sieve
+
+proc printPrimes {n} {
+    for {set i 0} {$i < [expr {$n+1}]} {incr i} {
+	set rd($i) "r"
+    }
+	set rd(0) "d"
+	set rd(1) "d"
+	set p 2
+	while {[expr {pow($p,2)}] <= $n} {
+	    if {$rd($p) == "r"} {
+		for {set j 2} {[expr {$j*$p}] <= $n} {incr j} {
+		    set rd([expr {$j*$p}]) "d"
+		}
+	    } 
+	    incr p
+	}
+	for {set p 2} {$p <= $n} {incr p} {
+	    if {$rd($p) == "r"} {
+		puts $p
+	    }
+	} 
+array unset rd
+}
+
+proc sumPrimes {n} {
+    for {set i 0} {$i < [expr {$n+1}]} {incr i} {
+        set rd($i) "r"
+    }
+        set rd(0) "d"
+        set rd(1) "d"
+        set p 2
+    while {[expr {pow($p,2)}] <= $n} {
+	if {$rd($p) == "r"} {
+	    for {set j 2} {[expr {$j*$p}] <= $n} {incr j} {
+		set rd([expr {$j*$p}]) "d"
+	    }
+	}
+            incr p
+    }
+    set sump [expr wide(0)]
+    for {set p 2} {$p <= $n} {incr p} {
+	if {$rd($p) == "r"} {
+                puts $p
+	    set sump [expr {wide($sump)+$p}]
+	}
+    }
+array unset rd
+puts "Sum of all Primes below $n is: $sump"
+}
+
+
+set prime 2000000
+#printPrimes $prime
+
+sumPrimes $prime
+
+exit

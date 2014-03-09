@@ -1,0 +1,27 @@
+#set primefactors [list]
+#set factors [list]
+#set num 600851475143
+set num 13195
+
+set sqrt [expr ceil(sqrt($num))]
+set j 0
+
+proc factorial {n} {
+    if {[expr $n-1] > 0} {
+	factorial [expr $n * ($n-1)]
+    }
+}
+
+
+for {set i 0} {$i < $sqrt} {incr i} {
+    if {[expr $sqrt % $i] == 0} {
+	set factors($j) $i
+	incr j
+    }
+}
+
+for {set k 0} {$k < $j} {incr k} {
+    puts "$factors($k)"
+}
+
+exit
