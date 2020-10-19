@@ -33,61 +33,66 @@ var testTriangle = `3
 
 
 function Triangle(triangleText) {
-    this.parsedTriangle = triangleText.split('\n').map(function(v, i, a) { return v.split(' '); });
-    this.maxPathValue = 0;
-    this.maxPathArray = Array.from('0'.repeat(this.parsedTriangle.length)).map(function(v, i, a) { return parseInt(v, 10); });
+    parsedTriangle = triangleText.split('\n').map(function(v, i, a) { return v.split(' '); });
+    maxPathValue = 0;
+    maxPathArray = Array.from('0'.repeat(parsedTriangle.length)).map(function(v, i, a) { return parseInt(v, 10); });
     this.computePathValue = function(pathArray) {
         var pathSum = 0;
-        pathSum = pathArray.reduce(function(p, v, i, a) { console.log(globalThis.parsedTriangle); return p + parsedTriangle[i][v]; }, 0);
+        pathSum = pathArray.reduce(function(p, v, i, a) {  return p + parseInt(parsedTriangle[i][v], 10); }, 0);
         return pathSum;
     };
     this.validatePath = function(pathArray) {
         for (var i = 0; i < pathArray.length; i += 1) {
-            if ((pathArray[i + 1] - pathArray[i]) > 1) {
+            if ((pathArray[i + 1] - pathArray[i]) > 1 || ((pathArray[i + 1] - pathArray[i]) < 0 )) {
                 return false;
             }
         }
         return true;
     };
     this.returnNextPath = function(path) {
-        var newPath = path.slice().reverse();
-        for (var i = 0; i < newPath.length; i += 1) {
-            if (newPath[i] <= i && (newPath[i + 1] == newPath[i])) {
+        var newPath = path.slice();
+        for (var i = newPath.length-1; i >= 0; i -= 1) {
+            if (newPath[i] < i && (newPath[i - 1] == newPath[i])) {
                 newPath[i] += 1;
                 break;
             }
         }
-        console.log(newPath.reverse());
-        return newPath.reverse();
+        console.log(newPath);
+        return newPath;
     };
 
 
     this.enumerateAllPaths = function() {
         var paths = [];
-        var currentPath = this.maxPathArray;
+        var currentPath = maxPathArray;
         paths.push(currentPath);
-        for (var i = 1; i < Math.pow(2, (this.parsedTriangle.length - 1)); i += 1) {
+        for (var i = 1; i < Math.pow(2, (parsedTriangle.length - 1)); i += 1) {
             currentPath = this.returnNextPath(currentPath);
             paths.push(currentPath);
         }
         return paths;
-    }
+    };
     this.bruteForceMaxPath = function() {
         var paths = this.enumerateAllPaths();
         for (var i = 0; i < paths.length; i += 1) {
             var path = paths[i];
             var value = this.computePathValue(path);
-            if (value > this.maxPathValue) {
-                this.maxPathValue = value;
-                this.maxPathArray = path;
+            if (value > maxPathValue) {
+                maxPathValue = value;
+                maxPathArray = path;
             }
         }
 
     };
-
+   this.getMaxValues = function() {
+       return {
+           maxPath: maxPathValue,
+           maxArray: maxPathArray
+       };
+   };
 }
 
 var test = new Triangle(testTriangle);
 test.bruteForceMaxPath();
-console.log(maxPathValue);
-console.log(maxPathArray);
+console.log(test.getMaxValues().maxPath);
+console.log(test.getMaxValues().maxArray);
