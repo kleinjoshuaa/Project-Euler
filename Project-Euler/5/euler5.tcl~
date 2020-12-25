@@ -1,0 +1,15 @@
+proc DivisibleBy20 {num} {
+    for {set i  2} {$i <= 20} {incr i} {
+	if {!([expr $num % i] == 0)} {
+	    return false;
+	}
+    }
+   return true;
+}
+
+for {set i 20} {![DivisibleBy20 $i]} {incr i 20} {
+}
+ 
+    puts $i 
+
+exit

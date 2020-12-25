@@ -1,0 +1,85 @@
+proc ntri {n} {
+    return [expr {($n*($n + 1))/2}]
+}
+
+proc printPrimes {n} {
+   # set n [expr {int($n / log10($n)) + 1}]
+    set pl [list]
+    for {set i 0} {$i < [expr {$n+1}]} {incr i} {
+        set rd($i) "r"
+    }
+        set rd(0) "d"
+        set rd(1) "d"
+        set p 2
+    while {[expr {pow($p,2)}] <= $n} {
+	if {$rd($p) == "r"} {
+	    for {set j 2} {[expr {$j*$p}] <= $n} {incr j} {
+		set rd([expr {$j*$p}]) "d"
+	    }
+	}
+            incr p
+    }
+    for {set p 2} {$p <= $n} {incr p} {
+	if {($p < $n) && $rd($p) == "r"} {
+            lappend pl $p
+	}
+    }
+array unset rd
+return $pl
+}
+
+proc isfact {n f} {
+    if {[expr {$n % $f}] == 0} {
+	return 1
+    }
+}
+
+proc goesinto {n f} {
+    if {$f == 1} {
+        return 0;
+    }
+    set t 0
+    set num $n
+    while {[string is integer $num] && [expr {$num % $f}] == 0} {
+        set num [expr {$num / $f}]
+	puts "num == $num"
+        incr t
+    }
+return $t
+}
+
+
+set tri_idx 3
+set max_tri 10
+
+while { $tri_idx < $max_tri } {
+    set trinum [ntri $tri_idx]
+    set pless [printPrimes $trinum]
+    puts "$trinum is the ${tri_idx}-th triangle number"
+    puts "The prime numbers less than $trinum are $pless"
+    set pidx 0
+    foreach prime $pless {
+	if {[isfact $trinum $prime] == 1} {
+	    puts "$prime is a factor of $trinum"
+	    set pf($pidx) $prime
+	    incr pidx
+	}
+    }
+    set tri_decr $trinum
+   # puts "PIDX: $pidx"
+    for {set i 0} {$i < $pidx} {incr i} {
+	#puts "tri_decr == $tri_decr"
+	puts "pf($i) == $pf($i)"
+	set exp($i) [goesinto $tri_decr $pf($i)]
+	set tri_decr [expr {$tri_decr - (pow($pf($i),$exp($i)))}]
+    }
+    set numdiv 1
+    for {set j 0} {$j < $pidx} {incr j} {
+	puts "EXP ($j) ( for $pf($j) )  = $exp($j)" 
+	set numdiv [expr {$numdiv * ($exp($j) + 1)}]
+    }
+    puts "$trinum has $numdiv divisors"
+	incr tri_idx
+}
+
+exit
