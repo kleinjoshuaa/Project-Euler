@@ -31,7 +31,7 @@ var testTriangle = `3
 8 5 9 3`;
 // Sneakily - I believe this is a directed acyclic graph
 
-
+// new comment
 function Triangle(triangleText) {
     parsedTriangle = triangleText.split('\n').map(function(v, i, a) { return v.split(' '); });
     maxPathValue = 0;
