@@ -29,65 +29,25 @@ var testTriangle = `3
 7 4
 2 4 6
 8 5 9 3`;
-// Sneakily - I believe this is a directed acyclic graph
 
 
 function Triangle(triangleText) {
-    this.parsedTriangle = triangleText.split('\n').map(function(v, i, a) { return v.split(' '); });
-    this.maxPathValue = 0;
-    this.maxPathArray = Array.from('0'.repeat(this.parsedTriangle.length)).map(function(v, i, a) { return parseInt(v, 10); });
-    this.computePathValue = function(pathArray) {
-        var pathSum = 0;
-        pathSum = pathArray.reduce(function(p, v, i, a) { console.log(globalThis.parsedTriangle); return p + parsedTriangle[i][v]; }, 0);
-        return pathSum;
-    };
-    this.validatePath = function(pathArray) {
-        for (var i = 0; i < pathArray.length; i += 1) {
-            if ((pathArray[i + 1] - pathArray[i]) > 1) {
-                return false;
-            }
+    parsedTriangle = triangleText.split('\n').map(function(v, i, a) { return v.split(' ').map(function(v, i, a) { return parseInt(v, 10); }); });
+    //maxPathValue = 0;
+    this.maxPathValue = parsedTriangle.reverse().reduce(function(p, v, i, a) {
+        if (p == 0) { // handle first row
+            return v;
+        };
+        var retVal = [];
+        // rows 2 and beyond
+        for (var i = 0; i < v.length; i += 1) {
+            var sum1 = p[i] + v[i];
+            var sum2 = p[i + 1] + v[i];
+            sum1 > sum2 ? retVal.push(sum1) : retVal.push(sum2);
         }
-        return true;
-    };
-    this.returnNextPath = function(path) {
-        var newPath = path.slice().reverse();
-        for (var i = 0; i < newPath.length; i += 1) {
-            if (newPath[i] <= i && (newPath[i + 1] == newPath[i])) {
-                newPath[i] += 1;
-                break;
-            }
-        }
-        console.log(newPath.reverse());
-        return newPath.reverse();
-    };
-
-
-    this.enumerateAllPaths = function() {
-        var paths = [];
-        var currentPath = this.maxPathArray;
-        paths.push(currentPath);
-        for (var i = 1; i < Math.pow(2, (this.parsedTriangle.length - 1)); i += 1) {
-            currentPath = this.returnNextPath(currentPath);
-            paths.push(currentPath);
-        }
-        return paths;
-    }
-    this.bruteForceMaxPath = function() {
-        var paths = this.enumerateAllPaths();
-        for (var i = 0; i < paths.length; i += 1) {
-            var path = paths[i];
-            var value = this.computePathValue(path);
-            if (value > this.maxPathValue) {
-                this.maxPathValue = value;
-                this.maxPathArray = path;
-            }
-        }
-
-    };
-
+        return retVal;
+    }, 0);
 }
 
-var test = new Triangle(testTriangle);
-test.bruteForceMaxPath();
-console.log(maxPathValue);
-console.log(maxPathArray);
+var test = new Triangle(triangle);
+console.log(test.maxPathValue);
